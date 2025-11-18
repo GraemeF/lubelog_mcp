@@ -6,12 +6,12 @@ using System.Text;
 namespace LubeLogMCP.MCP
 {
     [McpServerToolType]
-    public class TestClass
+    public class LubeLoggerMCP
     {
         private string instance { get; set; }
         private string username { get; set; }
         private string password { get; set; }
-        public TestClass()
+        public LubeLoggerMCP()
         {
             instance = "path/to/your/lubelogger/instance";
             username = "username";

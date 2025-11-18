@@ -1,8 +1,4 @@
-using LubeLogMCP.Models;
 using Microsoft.AspNetCore.Mvc;
-using ModelContextProtocol.Server;
-using System.ComponentModel;
-using System.Text;
 
 namespace LubeLogMCP.Controllers
 {
