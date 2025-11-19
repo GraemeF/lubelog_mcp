@@ -37,7 +37,9 @@ Inject the following environment variables
 ## Getting Started
 
 1. Clone `docker-compose.yml` file from this repo
-2. Run `docker compose up -d`
+2. Open `docker-compose.yml` and inject the environment variables above
+3. Save `docker-compose.yml`
+4. Run `docker compose up -d`
 
 ## Commands Supported
 
