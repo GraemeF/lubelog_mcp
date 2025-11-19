@@ -34,6 +34,11 @@ Inject the following environment variables
 - `LUBELOG_USER` - username to the lubelogger instance(required if auth is configured)
 - `LUBELOG_PASS` - password to the lubelogger instance(required if auth is configured)
 
+## Getting Started
+
+1. Clone `docker-compose.yml` file from this repo
+2. Run `docker compose up -d`
+
 ## Commands Supported
 
 - Retrieve list of vehicles
