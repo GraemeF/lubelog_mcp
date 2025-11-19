@@ -11,11 +11,11 @@ namespace LubeLogMCP.MCP
         private string instance { get; set; }
         private string username { get; set; }
         private string password { get; set; }
-        public LubeLoggerMCP()
+        public LubeLoggerMCP(IConfiguration _config)
         {
-            instance = "path/to/your/lubelogger/instance";
-            username = "username";
-            password = "password";
+            instance = _config["LUBELOG_INSTANCE"] ?? string.Empty;
+            username = _config["LUBELOG_USER"] ?? string.Empty;
+            password = _config["LUBELOG_PASS"] ?? string.Empty;
         }
         [McpServerTool, Description("Gets vehicles in garage")]
         public async Task<string> GetVehicles()
