@@ -17,7 +17,52 @@ namespace LubeLogMCP.MCP
             username = _config["LUBELOG_USER"] ?? string.Empty;
             password = _config["LUBELOG_PASS"] ?? string.Empty;
         }
-        [McpServerTool, Description("Gets vehicles in garage")]
+        [McpServerTool, Description("Gets status of LubeLogger MCP.")]
+        public async Task<string> GetLubeLoggerMCPStatus()
+        {
+            string result = string.Empty;
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                result += $"Auth Configured for {username}";
+            } 
+            else
+            {
+                result += "Auth Not Configured";
+            }
+            result += Environment.NewLine;
+            if (!string.IsNullOrWhiteSpace(instance))
+            {
+                result += $"MCP Server Configured for {instance}";
+                string endpoint = $"{instance}/api/version";
+                var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+                if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+                {
+                    var authenticationString = $"{username}:{password}";
+                    var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                    request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+                }
+                result += Environment.NewLine;
+                try
+                {
+                    var httpClient = new HttpClient();
+                    var serverResponse = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<ServerVersion>();
+                    if (!string.IsNullOrWhiteSpace(serverResponse.CurrentVersion))
+                    {
+                        result += $"LubeLogger Version: {serverResponse.CurrentVersion}";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result += $"Failed to connect to LubeLogger instance: {ex.Message}";
+                }
+            }
+            else
+            {
+                result += "LubeLogger Instance not Configured";
+            }
+            return result;
+        }
+        [McpServerTool, Description("Gets vehicles in garage.")]
         public async Task<string> GetVehicles()
         {
             string endpoint = $"{instance}/api/vehicles";
@@ -37,6 +82,7 @@ namespace LubeLogMCP.MCP
                 foreach(Vehicle vehicle in result)
                 {
                     resultString += $"Id: {vehicle.Id} - {vehicle.Year} {vehicle.Make} {vehicle.Model}({vehicle.Identifier})";
+                    resultString += Environment.NewLine;
                 }
                 return resultString;
             }
@@ -66,6 +112,126 @@ namespace LubeLogMCP.MCP
         };
 
             string endpoint = $"{instance}/api/vehicle/gasrecords/add?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new FormUrlEncodedContent(dataParams)
+            };
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var authenticationString = $"{username}:{password}";
+                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+            }
+            try
+            {
+                var httpClient = new HttpClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Adds a service record.")]
+        public async Task<string> AddServiceRecord(
+            [Description("id of the vehicle")] int vehicleId,
+            [Description("Date serviced")] DateTime date,
+            [Description("Odometer at time of service")] int odometer,
+            [Description("Description of items serviced")] string description,
+            [Description("Total cost of the service")] decimal cost)
+        {
+            var dataParams = new List<KeyValuePair<string, string>>
+        {
+             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
+             new KeyValuePair<string, string>("odometer", odometer.ToString()),
+             new KeyValuePair<string, string>("description", description),
+             new KeyValuePair<string, string>("cost", cost.ToString())
+        };
+
+            string endpoint = $"{instance}/api/vehicle/servicerecords/add?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new FormUrlEncodedContent(dataParams)
+            };
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var authenticationString = $"{username}:{password}";
+                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+            }
+            try
+            {
+                var httpClient = new HttpClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Adds a repair record.")]
+        public async Task<string> AddRepairRecord(
+            [Description("id of the vehicle")] int vehicleId,
+            [Description("Date repaired")] DateTime date,
+            [Description("Odometer at time of repair")] int odometer,
+            [Description("Description of items repaired")] string description,
+            [Description("Total cost of the repair")] decimal cost)
+        {
+            var dataParams = new List<KeyValuePair<string, string>>
+        {
+             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
+             new KeyValuePair<string, string>("odometer", odometer.ToString()),
+             new KeyValuePair<string, string>("description", description),
+             new KeyValuePair<string, string>("cost", cost.ToString())
+        };
+
+            string endpoint = $"{instance}/api/vehicle/repairrecords/add?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new FormUrlEncodedContent(dataParams)
+            };
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var authenticationString = $"{username}:{password}";
+                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+            }
+            try
+            {
+                var httpClient = new HttpClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Adds an upgrade record.")]
+        public async Task<string> AddUpgradeRecord(
+            [Description("id of the vehicle")] int vehicleId,
+            [Description("Date upgraded")] DateTime date,
+            [Description("Odometer at time of upgrade")] int odometer,
+            [Description("Description of items upgraded")] string description,
+            [Description("Total cost of the upgrade")] decimal cost)
+        {
+            var dataParams = new List<KeyValuePair<string, string>>
+        {
+             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
+             new KeyValuePair<string, string>("odometer", odometer.ToString()),
+             new KeyValuePair<string, string>("description", description),
+             new KeyValuePair<string, string>("cost", cost.ToString())
+        };
+
+            string endpoint = $"{instance}/api/vehicle/upgraderecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
