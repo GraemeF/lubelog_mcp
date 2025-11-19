@@ -26,6 +26,14 @@ Sample Claude Config:
 }
 ```
 
+## Configuration
+
+Inject the following environment variables
+
+- `LUBELOG_INSTANCE` - where the lubelogger instance is hosted(required)
+- `LUBELOG_USER` - username to the lubelogger instance(required if auth is configured)
+- `LUBELOG_PASS` - password to the lubelogger instance(required if auth is configured)
+
 ## Commands Supported
 
 - Retrieve list of vehicles
