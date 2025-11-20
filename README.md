@@ -19,7 +19,7 @@ Sample Claude Config:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "http://localhost:5105/api/mcp"
+        "http://localhost:40150/api/mcp"
       ]
     }
   }
