@@ -2,6 +2,7 @@
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Text;
+using System.Text.Json;
 
 namespace LubeLogMCP.MCP
 {
@@ -99,7 +100,8 @@ namespace LubeLogMCP.MCP
             [Description("Volume of gas pumped")] decimal volume,
             [Description("Total cost of fuel up")] decimal cost,
             [Description("Is fueled up completely")] bool fillToFull,
-            [Description("Any missed fuel ups")] bool missedFuelUp)
+            [Description("Any missed fuel ups")] bool missedFuelUp,
+            [Description("Any extra fields configured for gasrecord")] List<ExtraField> extraFields)
         {
             var dataParams = new List<KeyValuePair<string, string>>
         {
@@ -110,6 +112,12 @@ namespace LubeLogMCP.MCP
              new KeyValuePair<string, string>("isFillToFull", fillToFull.ToString()),
              new KeyValuePair<string, string>("missedFuelUp", missedFuelUp.ToString()),
         };
+
+            for(int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
 
             string endpoint = $"{instance}/api/vehicle/gasrecords/add?vehicleId={vehicleId}";
 
@@ -141,7 +149,8 @@ namespace LubeLogMCP.MCP
             [Description("Date serviced")] DateTime date,
             [Description("Odometer at time of service")] int odometer,
             [Description("Description of items serviced")] string description,
-            [Description("Total cost of the service")] decimal cost)
+            [Description("Total cost of the service")] decimal cost,
+            [Description("Any extra fields configured for servicerecord")] List<ExtraField> extraFields)
         {
             var dataParams = new List<KeyValuePair<string, string>>
         {
@@ -150,6 +159,12 @@ namespace LubeLogMCP.MCP
              new KeyValuePair<string, string>("description", description),
              new KeyValuePair<string, string>("cost", cost.ToString())
         };
+
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
 
             string endpoint = $"{instance}/api/vehicle/servicerecords/add?vehicleId={vehicleId}";
 
@@ -181,7 +196,8 @@ namespace LubeLogMCP.MCP
             [Description("Date repaired")] DateTime date,
             [Description("Odometer at time of repair")] int odometer,
             [Description("Description of items repaired")] string description,
-            [Description("Total cost of the repair")] decimal cost)
+            [Description("Total cost of the repair")] decimal cost,
+            [Description("Any extra fields configured for repairrecord")] List<ExtraField> extraFields)
         {
             var dataParams = new List<KeyValuePair<string, string>>
         {
@@ -190,6 +206,12 @@ namespace LubeLogMCP.MCP
              new KeyValuePair<string, string>("description", description),
              new KeyValuePair<string, string>("cost", cost.ToString())
         };
+
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
 
             string endpoint = $"{instance}/api/vehicle/repairrecords/add?vehicleId={vehicleId}";
 
@@ -221,7 +243,8 @@ namespace LubeLogMCP.MCP
             [Description("Date upgraded")] DateTime date,
             [Description("Odometer at time of upgrade")] int odometer,
             [Description("Description of items upgraded")] string description,
-            [Description("Total cost of the upgrade")] decimal cost)
+            [Description("Total cost of the upgrade")] decimal cost,
+            [Description("Any extra fields configured for upgraderecord")] List<ExtraField> extraFields)
         {
             var dataParams = new List<KeyValuePair<string, string>>
         {
@@ -230,6 +253,12 @@ namespace LubeLogMCP.MCP
              new KeyValuePair<string, string>("description", description),
              new KeyValuePair<string, string>("cost", cost.ToString())
         };
+
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
 
             string endpoint = $"{instance}/api/vehicle/upgraderecords/add?vehicleId={vehicleId}";
 
@@ -259,8 +288,8 @@ namespace LubeLogMCP.MCP
         public async Task<string> AddOdometerRecord(
             [Description("id of the vehicle")] int vehicleId,
             [Description("Date recorded")] DateTime date,
-            [Description("Odometer recorded")] int odometer
-            )
+            [Description("Odometer recorded")] int odometer,
+            [Description("Any extra fields configured for odometerrecord")] List<ExtraField> extraFields)
         {
             var dataParams = new List<KeyValuePair<string, string>>
         {
@@ -268,7 +297,64 @@ namespace LubeLogMCP.MCP
              new KeyValuePair<string, string>("odometer", odometer.ToString())
         };
 
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
+
             string endpoint = $"{instance}/api/vehicle/odometerrecords/add?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new FormUrlEncodedContent(dataParams)
+            };
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var authenticationString = $"{username}:{password}";
+                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+            }
+            try
+            {
+                var httpClient = new HttpClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Adds a supply record.")]
+        public async Task<string> AddSupplyRecord(
+            [Description("id of the vehicle")] int vehicleId,
+            [Description("Date purchased")] DateTime date,
+            [Description("Description of the supply")] string description,
+            [Description("Quantity purchased")] decimal quantity,
+            [Description("Cost of the supply")] decimal cost,
+            [Description("Part number")] string partNumber,
+            [Description("Part supplier")] string partSupplier,
+            [Description("Any extra fields configured for supplyrecord")] List<ExtraField> extraFields)
+        {
+            var dataParams = new List<KeyValuePair<string, string>>
+        {
+             new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
+             new KeyValuePair<string, string>("description", description),
+             new KeyValuePair<string, string>("partQuantity", quantity.ToString()),
+             new KeyValuePair<string, string>("cost", cost.ToString()),
+             new KeyValuePair<string, string>("partNumber", partNumber),
+             new KeyValuePair<string, string>("partSupplier", partSupplier)
+        };
+
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
+
+            string endpoint = $"{instance}/api/vehicle/supplyrecords/add?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
@@ -313,6 +399,34 @@ namespace LubeLogMCP.MCP
                 var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Get Extra Fields for a Record Type")]
+        public async Task<string> GetExtraFields(
+            [Description("Record type")] ImportMode importMode
+            )
+        {
+
+            string endpoint = $"{instance}/api/extrafields";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var authenticationString = $"{username}:{password}";
+                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+            }
+            try
+            {
+                var httpClient = new HttpClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<List<ExtraFieldsVM>>();
+                result.RemoveAll(x => x.RecordType != importMode.ToString());
+                var serializedResult = JsonSerializer.Serialize(result);
+                return serializedResult;
             }
             catch (Exception ex)
             {
