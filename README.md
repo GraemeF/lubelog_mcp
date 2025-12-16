@@ -47,6 +47,7 @@ Inject the following environment variables
 - Add Fuel Record from image of receipt
 - Add Service/Repair/Upgrade records from invoice
 - Add Odometer record from image of dashboard
+- Add Supply(or shop supply) record from image of invoice
 - Get latest odometer reading from vehicle
 - Check status of LubeLogger instance
 
