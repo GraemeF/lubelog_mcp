@@ -36,7 +36,7 @@ Sample Claude Config for header-based auth:
       "args": [
         "mcp-remote",
         "http://localhost:5105/api/mcp",
-	"--header",
+        "--header",
         "Authorization:${AUTH_HEADER}"
       ],
       "env": {
