@@ -38,12 +38,7 @@ namespace LubeLogMCP.MCP
                 result += $"MCP Server Configured for {instance}";
                 string endpoint = $"{instance}/api/version";
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-                if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-                {
-                    var authenticationString = $"{username}:{password}";
-                    var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                    request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-                }
+                AddAuthHeaders(request);
                 result += Environment.NewLine;
                 try
                 {
@@ -71,12 +66,7 @@ namespace LubeLogMCP.MCP
             string endpoint = $"{instance}/api/vehicles";
 
             var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -127,12 +117,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -174,12 +159,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -221,12 +201,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -268,12 +243,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -311,12 +281,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -362,12 +327,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -412,12 +372,7 @@ namespace LubeLogMCP.MCP
             {
                 Content = new FormUrlEncodedContent(dataParams)
             };
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -439,12 +394,7 @@ namespace LubeLogMCP.MCP
             string endpoint = $"{instance}/api/vehicle/odometerrecords/latest?vehicleId={vehicleId}";
 
             var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -466,12 +416,7 @@ namespace LubeLogMCP.MCP
             string endpoint = $"{instance}/api/extrafields";
 
             var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                var authenticationString = $"{username}:{password}";
-                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
-                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
-            }
+            AddAuthHeaders(request);
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
@@ -483,6 +428,15 @@ namespace LubeLogMCP.MCP
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+        }
+        private void AddAuthHeaders(HttpRequestMessage request)
+        {
+            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                var authenticationString = $"{username}:{password}";
+                var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
+                request.Headers.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
             }
         }
     }
