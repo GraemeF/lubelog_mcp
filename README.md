@@ -10,61 +10,13 @@ AI and MCP are still evolving technologies, implementations of this project is s
 - AI agent with ability to call tools/external integrations(i.e.: Claude Desktop)
 - Node.js(for npx)
 
-Sample Claude Config for local or no auth:
-
-```
-{
-  "mcpServers": {
-    "lubelogger": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "http://localhost:40150/api/mcp"
-      ]
-    }
-  }
-}
-```
-
-Sample Claude Config for header-based auth:
-
-```
-{
-  "mcpServers": {
-    "lubelogger": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "http://localhost:5105/api/mcp",
-        "--header",
-        "Authorization:${AUTH_HEADER}"
-      ],
-      "env": {
-        "AUTH_HEADER": "Basic <auth-token>" 
-      }
-    }
-  }
-}
-```
-
-`<auth-token>` is a base64 encoded string of your credentials in the following format `username:password` 
-
-Example, username test and password 1234 will result in `dGVzdDoxMjM0`
-
-## Configuration
-
-Inject the following environment variables
-
-- `LUBELOG_INSTANCE` - where the lubelogger instance is hosted(required)
-- `LUBELOG_USER` - username to the lubelogger instance(required if auth is configured, skip if using header auth)
-- `LUBELOG_PASS` - password to the lubelogger instance(required if auth is configured, skip if using header auth)
-
 ## Getting Started
 
-1. Clone `docker-compose.yml` file from this repo
-2. Open `docker-compose.yml` and inject the environment variables above
-3. Save `docker-compose.yml`
-4. Run `docker compose up -d`
+This MCP Server allows for authentication to be configured at the AI-Agent level(Header Auth) or at the MCP Server level(Local Auth).
+
+Header Auth is more complex to set up but offers greater security, whereas Local Auth is easier to set up but allows users unfettered access to all vehicles in the instance.
+
+For details on both configurations, see [Wiki](https://github.com/hargata/lubelog_mcp/wiki)
 
 ## Commands Supported
 
