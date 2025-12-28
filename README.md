@@ -21,6 +21,7 @@ For details on both configurations, see [Wiki](https://github.com/hargata/lubelo
 ## Commands Supported
 
 - Retrieve list of vehicles
+- Add Vehicle from VIN
 - Add Fuel Record from image of receipt
 - Add Service/Repair/Upgrade records from invoice
 - Add Odometer record from image of dashboard
