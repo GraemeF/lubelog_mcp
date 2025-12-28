@@ -26,21 +26,20 @@ namespace LubeLogMCP.MCP
         public async Task<string> GetLubeLoggerMCPStatus()
         {
             string result = string.Empty;
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                result += $"Auth Configured for {username}";
-            } 
-            else
-            {
-                result += "Auth Not Configured";
-            }
-            result += Environment.NewLine;
             if (!string.IsNullOrWhiteSpace(instance))
             {
                 result += $"MCP Server Configured for {instance}";
+                result += Environment.NewLine;
                 string endpoint = $"{instance}/api/version";
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
                 AddAuthHeaders(request);
+                if (request.Headers.Contains("Authorization"))
+                {
+                    result += "Auth Configured";
+                } else
+                {
+                    result += "Auth Not Configured";
+                }
                 result += Environment.NewLine;
                 try
                 {
@@ -369,6 +368,54 @@ namespace LubeLogMCP.MCP
             }
 
             string endpoint = $"{instance}/api/vehicle/supplyrecords/add?vehicleId=0";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new FormUrlEncodedContent(dataParams)
+            };
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Adds a vehicle record.")]
+        public async Task<string> AddVehicleRecord(
+            [Description("Model year of the vehicle")] int year,
+            [Description("Make of the vehicle")] string make,
+            [Description("Model of the vehicle")] string model,
+            [Description("Optional license plate of the vehicle")] string licensePlate,
+            [Description("Vehicle use engine hours")] bool useEngineHours,
+            [Description("Odometer is optional for vehicle")] bool odometerOptional,
+            [Description("Fuel type for the vehicle")] FuelType fuelType,
+            [Description("Any extra fields configured for vehiclerecord")] List<ExtraField> extraFields)
+        {
+            var dataParams = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("year", year.ToString()),
+                new KeyValuePair<string, string>("make", make),
+                new KeyValuePair<string, string>("model", model),
+                new KeyValuePair<string, string>("useEngineHours", useEngineHours.ToString()),
+                new KeyValuePair<string, string>("odometerOptional", odometerOptional.ToString()),
+                new KeyValuePair<string, string>("identifier", "LicensePlate"),
+                new KeyValuePair<string, string>("licensePlate", licensePlate),
+                new KeyValuePair<string, string>("fuelType", fuelType.ToString())
+            };
+
+            for (int i = 0; i < extraFields.Count; i++)
+            {
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][name]", extraFields[i].Name));
+                dataParams.Add(new KeyValuePair<string, string>($"extraFields[{i}][value]", extraFields[i].Value));
+            }
+
+            string endpoint = $"{instance}/api/vehicles/add";
 
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
             {
