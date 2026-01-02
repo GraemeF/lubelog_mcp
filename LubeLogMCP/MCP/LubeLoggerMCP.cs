@@ -262,13 +262,19 @@ namespace LubeLogMCP.MCP
             [Description("id of the vehicle")] int vehicleId,
             [Description("Date recorded")] DateTime date,
             [Description("Odometer recorded")] int odometer,
-            [Description("Any extra fields configured for odometerrecord")] List<ExtraField> extraFields)
+            [Description("Any extra fields configured for odometerrecord")] List<ExtraField> extraFields,
+            [Description("Ids of equipment equipped for the vehicle")] List<int> equipmentRecordIds)
         {
             var dataParams = new List<KeyValuePair<string, string>>
         {
              new KeyValuePair<string, string>("date", date.ToString("yyyy-MM-dd")),
              new KeyValuePair<string, string>("odometer", odometer.ToString())
         };
+
+             if (equipmentRecordIds.Any())
+            {
+                dataParams.Add(new KeyValuePair<string, string>("equipmentRecordId", string.Join(' ', equipmentRecordIds)));
+            }
 
             for (int i = 0; i < extraFields.Count; i++)
             {
@@ -289,6 +295,30 @@ namespace LubeLogMCP.MCP
                 var result = await httpClient.SendAsync(request).Result.Content.ReadAsStringAsync();
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        [McpServerTool, Description("Get Equipped Equipment for a vehicle")]
+        public async Task<string> GetEquippedEquipment(
+            [Description("id of the vehicle")] int vehicleId
+            )
+        {
+
+            string endpoint = $"{instance}/api/vehicle/equipmentrecords?vehicleId={vehicleId}";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+            request.Headers.Add("culture-invariant", "true");
+            AddAuthHeaders(request);
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var result = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<List<Equipment>>();
+                result.RemoveAll(x => !x.IsEquipped);
+                var serializedResult = JsonSerializer.Serialize(result);
+                return serializedResult;
             }
             catch (Exception ex)
             {
