@@ -47,13 +47,14 @@ namespace LubeLogMCP.Controllers
                 {
                     var httpClient = _httpClientFactory.CreateClient();
                     var serverResponse = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<ServerVersion>();
-                    if (!string.IsNullOrWhiteSpace(serverResponse.CurrentVersion))
+                    if (!string.IsNullOrWhiteSpace(serverResponse?.CurrentVersion))
                     {
                         viewModel.IsConnected = true;
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     viewModel.IsConnected = false;
                 }
             }

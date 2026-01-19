@@ -45,7 +45,7 @@ namespace LubeLogMCP.MCP
                 {
                     var httpClient = _httpClientFactory.CreateClient();
                     var serverResponse = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<ServerVersion>();
-                    if (!string.IsNullOrWhiteSpace(serverResponse.CurrentVersion))
+                    if (!string.IsNullOrWhiteSpace(serverResponse?.CurrentVersion))
                     {
                         result += $"LubeLogger Version: {serverResponse.CurrentVersion}";
                     }
@@ -73,7 +73,7 @@ namespace LubeLogMCP.MCP
                 var httpClient = _httpClientFactory.CreateClient();
                 var result = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<List<Vehicle>>();
                 var resultString = string.Empty;
-                foreach(Vehicle vehicle in result)
+                foreach(Vehicle vehicle in result ?? new List<Vehicle>())
                 {
                     resultString += $"Id: {vehicle.Id} - {vehicle.Year} {vehicle.Make} {vehicle.Model}({vehicle.Identifier})";
                     resultString += Environment.NewLine;
@@ -316,7 +316,7 @@ namespace LubeLogMCP.MCP
             {
                 var httpClient = _httpClientFactory.CreateClient();
                 var result = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<List<Equipment>>();
-                result.RemoveAll(x => !x.IsEquipped);
+                result?.RemoveAll(x => !x.IsEquipped);
                 var serializedResult = JsonSerializer.Serialize(result);
                 return serializedResult;
             }
@@ -500,7 +500,7 @@ namespace LubeLogMCP.MCP
             {
                 var httpClient = _httpClientFactory.CreateClient();
                 var result = await httpClient.SendAsync(request).Result.Content.ReadFromJsonAsync<List<ExtraFieldsVM>>();
-                result.RemoveAll(x => x.RecordType != importMode.ToString());
+                result?.RemoveAll(x => x.RecordType != importMode.ToString());
                 var serializedResult = JsonSerializer.Serialize(result);
                 return serializedResult;
             }
