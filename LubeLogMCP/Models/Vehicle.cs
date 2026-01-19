@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
         public int Year { get; set; }
-        public string Make { get; set; }
-        public string Model { get; set; }
-        public string LicensePlate { get; set; }
+        public string Make { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public string LicensePlate { get; set; } = string.Empty;
         public List<ExtraField> ExtraFields { get; set; } = new List<ExtraField>();
         public string VehicleIdentifier { get; set; } = "LicensePlate";
         public string Identifier { get {
@@ -18,7 +18,7 @@
                 {
                     if (ExtraFields.Any(x => x.Name == VehicleIdentifier))
                     {
-                        return ExtraFields?.FirstOrDefault(x => x.Name == VehicleIdentifier)?.Value;
+                        return ExtraFields?.FirstOrDefault(x => x.Name == VehicleIdentifier)?.Value ?? "N/A";
                     }
                     else
                     {
@@ -29,7 +29,7 @@
     }
     public class ExtraField
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }

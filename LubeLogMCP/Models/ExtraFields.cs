@@ -18,13 +18,13 @@
     }
     public class ExtraFieldsVM
     {
-        public string RecordType { get; set; }
-        public List<ExtraFieldVM> ExtraFields { get; set; }
+        public string RecordType { get; set; } = string.Empty;
+        public List<ExtraFieldVM> ExtraFields { get; set; } = new List<ExtraFieldVM>();
     }
     public class ExtraFieldVM
     {
-        public string Name { get; set; }
-        public string IsRequired { get; set; }
-        public string FieldType { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string IsRequired { get; set; } = string.Empty;
+        public string FieldType { get; set; } = string.Empty;
     }
 }
