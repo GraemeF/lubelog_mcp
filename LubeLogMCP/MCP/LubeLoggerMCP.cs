@@ -516,6 +516,14 @@ namespace LubeLogMCP.MCP
             {
                 request.Headers.Add("Authorization", authHeader.FirstOrDefault());
             }
+            else if (_httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("x-api-key", out var apiKeyHeader) ?? false)
+            {
+                request.Headers.Add("x-api-key", apiKeyHeader.FirstOrDefault());
+            }
+            else if (_httpContextAccessor.HttpContext?.Request.Query.TryGetValue("apiKey", out var apiKey) ?? false)
+            {
+                request.Headers.Add("x-api-key", apiKey.FirstOrDefault());
+            }
             else if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {
                 var authenticationString = $"{username}:{password}";
