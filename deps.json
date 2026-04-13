@@ -1,0 +1,22 @@
+[
+  {
+    "pname": "Microsoft.Extensions.AI.Abstractions",
+    "version": "10.1.1",
+    "hash": "sha256-CkVIF8lb/I4GJQN+iWvvGayDHLVpF1XrlzdotvvKneg="
+  },
+  {
+    "pname": "ModelContextProtocol",
+    "version": "0.6.0-preview.1",
+    "hash": "sha256-OzPKdxEtIr41Fj/5kOjRqG6aOgTA0FyvJ+4MXpnnFpg="
+  },
+  {
+    "pname": "ModelContextProtocol.AspNetCore",
+    "version": "0.6.0-preview.1",
+    "hash": "sha256-NBu43O/8S9WR6KgNrgmOonSgObNcyfsGjC6kE1bqVKs="
+  },
+  {
+    "pname": "ModelContextProtocol.Core",
+    "version": "0.6.0-preview.1",
+    "hash": "sha256-TGYWEktrvJCWNTAO39Uu3Xlnn2g0L7SX4sMqEJuvdQc="
+  }
+]
