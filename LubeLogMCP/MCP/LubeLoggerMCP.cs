@@ -1,6 +1,8 @@
 ﻿using LubeLogMCP.Models;
+using Microsoft.Extensions.Configuration;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -12,15 +14,15 @@ namespace LubeLogMCP.MCP
         private string instance { get; set; }
         private string username { get; set; }
         private string password { get; set; }
+        private string apiKey { get; set; }
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public LubeLoggerMCP(IConfiguration _config, IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+        public LubeLoggerMCP(IConfiguration _config, IHttpClientFactory httpClientFactory)
         {
             instance = _config["LUBELOG_INSTANCE"] ?? string.Empty;
             username = _config["LUBELOG_USER"] ?? string.Empty;
             password = _config["LUBELOG_PASS"] ?? string.Empty;
+            apiKey = _config["LUBELOG_API_KEY"] ?? string.Empty;
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
         [McpServerTool, Description("Gets status of LubeLogger MCP.")]
         public async Task<string> GetLubeLoggerMCPStatus()
@@ -511,18 +513,9 @@ namespace LubeLogMCP.MCP
         }
         private void AddAuthHeaders(HttpRequestMessage request)
         {
-            //check if we have headers
-            if (_httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("Authorization", out var authHeader) ?? false)
+            if (!string.IsNullOrWhiteSpace(apiKey))
             {
-                request.Headers.Add("Authorization", authHeader.FirstOrDefault());
-            }
-            else if (_httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("x-api-key", out var apiKeyHeader) ?? false)
-            {
-                request.Headers.Add("x-api-key", apiKeyHeader.FirstOrDefault());
-            }
-            else if (_httpContextAccessor.HttpContext?.Request.Query.TryGetValue("apiKey", out var apiKey) ?? false)
-            {
-                request.Headers.Add("x-api-key", apiKey.FirstOrDefault());
+                request.Headers.Add("x-api-key", apiKey);
             }
             else if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {

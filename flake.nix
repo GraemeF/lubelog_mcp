@@ -30,26 +30,11 @@
             nugetDeps = ./deps.json;
 
             dotnet-sdk = pkgs.dotnetCorePackages.sdk_10_0;
-            dotnet-runtime = pkgs.dotnetCorePackages.aspnetcore_10_0;
+            dotnet-runtime = pkgs.dotnetCorePackages.runtime_10_0;
 
             executables = [ "LubeLogMCP" ];
-          };
 
-          container = pkgs.dockerTools.buildLayeredImage {
-            name = "lubelog-mcp";
-            tag = "latest";
-            contents = [ self.packages.${system}.default ];
-            fakeRootCommands = ''
-              mkdir -p tmp
-            '';
-            config = {
-              Cmd = [ "${self.packages.${system}.default}/bin/LubeLogMCP" ];
-              ExposedPorts."8080/tcp" = { };
-              Env = [
-                "ASPNETCORE_URLS=http://+:8080"
-                "TMPDIR=/tmp"
-              ];
-            };
+            meta.mainProgram = "LubeLogMCP";
           };
         }
       );
